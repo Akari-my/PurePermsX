@@ -1,0 +1,31 @@
+# === DO NOT REMOVE OR EDIT PLACEHOLDERS IN {curly_brackets} ===
+# These placeholders will be automatically replaced by the plugin!
+# For example: {group}, {player}, {permission}
+
+prefix: "§6[PPX] "  # Message prefix shown before all plugin messages
+
+commands:
+  group:
+    create: "§7Group §b{group} §7created."  # {group} = name of the created group
+    already_exists: "§7Group §c{group} §7already exists."  # {group} = name used
+    delete: "§7Group §b{group} §7has been deleted."  # {group} = deleted group
+    does_not_exist: "§7Group §c{group} §7does not exist."  # {group} = name given
+    no_groups: "§7No groups found."  # Shown when group list is empty
+    list_title: "§7Available groups:"  # Header before group names
+    perms_title: "§7Permissions for group §b{group}§e:"  # {group} = group name
+    no_perms: "§7Group §c{group} §7has no permissions."  # {group} = group
+    added_perm: "§7Permission §b{permission} §7added to group §b{group}."  # {permission}, {group}
+    removed_perm: "§7Permission §b{permission} §7removed from group §b{group}."  # {permission}, {group}
+
+  user:
+    setgroup: "§aUser §b{player} §aassigned to group §e{group}"  # {player}, {group}
+    group: "§eUser §b{player} §eis in group: §a{group}"  # {player}, {group}
+    usage_setgroup: "§cUse: /ppx user setgroup <player> <group>"
+    usage_group: "§cUse: /ppx user group <player>"
+
+  usage:
+    groupadd: "§cUse: /ppx group add <name>"
+    groupdel: "§cUse: /ppx group del <name>"
+    addperm: "§cUse: /ppx group addperm <group> <permission>"
+    rmperm: "§cUse: /ppx group rmperm <group> <permission>"
+    perms: "§cUse: /ppx group perms <group>"

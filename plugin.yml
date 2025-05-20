@@ -1,0 +1,14 @@
+name: PurePermsX
+version: 1.0.0
+main: Mellooh\PurePermsX\PPX
+api: 5.0.0
+author: Mellooh
+description: Modern permissions management plugin for PocketMine-MP
+
+permissions:
+  ppx.use:
+    description: Full permits
+    default: op
+  ppx.admin:
+    description: Full permits
+    default: op
