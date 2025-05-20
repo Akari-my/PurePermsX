@@ -68,7 +68,7 @@ PPX::getInstance()->getPermissionHandler()->applyPermissions($player);
 
 ## 🧑‍💻 Author & License
 
-- 📌 Plugin by [Mellooh](https://github.com/Mellooh)
+- 📌 Plugin by [Mellooh](https://github.com/Akari-my)
 - 🔓 Licensed under [MIT License](./LICENSE)
 
 ---
