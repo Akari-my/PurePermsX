@@ -42,12 +42,12 @@ Here are some of the available commands:
 | Command | Description |
 |--------|-------------|
 | `/ppx help` | Shows all available commands |
-| `/ppx addgroup <name>` | Create a new group |
-| `/ppx delgroup <name>` | Delete a group |
-| `/ppx setgroup <player> <group>` | Assign a group to a player |
-| `/ppx addperm <group> <permission>` | Add a permission to a group |
-| `/ppx rmperm <group> <permission>` | Remove a permission from a group |
-| `/ppx perms <group>` | List group permissions |
+| `/ppx grouo add <name>` | Create a new group |
+| `/ppx group delete <name>` | Delete a group |
+| `/ppx user sergroup <name group>` | Assign a group to a player |
+| `/ppx group addperm <group> <permission>` | Add a permission to a group |
+| `/ppx group rmperm <group> <permission>` | Remove a permission from a group |
+| `/ppx group perms <group>` | List group permissions |
 | `/ppx list` | Show all groups |
 
 _All messages and usage prompts are customizable inside `messages.yml`._
