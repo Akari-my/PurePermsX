@@ -42,9 +42,9 @@ Here are some of the available commands:
 | Command | Description |
 |--------|-------------|
 | `/ppx help` | Shows all available commands |
-| `/ppx grouo add <name>` | Create a new group |
-| `/ppx group delete <name>` | Delete a group |
-| `/ppx user sergroup <name group>` | Assign a group to a player |
+| `/ppx group add <name>` | Create a new group |
+| `/ppx group del <name>` | Delete a group |
+| `/ppx user setgroup <name group>` | Assign a group to a player |
 | `/ppx group addperm <group> <permission>` | Add a permission to a group |
 | `/ppx group rmperm <group> <permission>` | Remove a permission from a group |
 | `/ppx group perms <group>` | List group permissions |
