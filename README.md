@@ -2,7 +2,7 @@
 
 > A clean, modern and extensible permission system for PocketMine-MP (API 5+)
 
-**PurePermsX** is a other version of the original PurePerms. Designed for modern servers, it offers powerful permission/group management with clean architecture, full API support, and seamless integration.
+**PurePermsX** is a other version of the original PurePerms. completely written from scratch, Designed for modern servers, it offers powerful permission/group management with clean architecture, full API support, and seamless integration.
 
 ---
 
