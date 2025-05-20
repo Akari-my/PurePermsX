@@ -78,5 +78,3 @@ PPX::getInstance()->getPermissionHandler()->applyPermissions($player);
 - Found a bug? Open an issue
 - Pull requests welcome
 - Star the repo if you like the project!
-
-```
