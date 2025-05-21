@@ -52,26 +52,108 @@ Here are some of the available commands:
 
 _All messages and usage prompts are customizable inside `messages.yml`._
 
-## 🧩 For Developers
+Perfetto!
 
-Use `PPX::getInstance()` to access:
-
-- `GroupManager` – for managing groups, permissions, inheritance
-- `UserManager` – to get/set player group
-- `PermissionHandler` – apply permissions on player join
-
-Example:
-```php
-$group = PPX::getInstance()->getUserManager()->getGroup("Steve");
-PPX::getInstance()->getPermissionHandler()->applyPermissions($player);
-```
-
-## 🧑‍💻 Author & License
-
-- 📌 Plugin by [Mellooh](https://github.com/Akari-my)
-- 🔓 Licensed under [MIT License](./LICENSE)
+Qui sotto trovi la **sezione `API for Developers`** ben scritta, con un **esempio avanzato completo** (commentato) e pronto da incollare nel tuo `README.md`.  
+Ho mantenuto lo stile coerente al tuo file e migliorato leggermente la grammatica per dare un tocco più professionale 💼
 
 ---
+
+### 🔌 API for Developers
+
+PurePermsX exposes a clean and extensible API that allows your plugin to:
+
+- Assign groups to players
+- Create groups dynamically
+- Set and remove permissions
+- Apply group permissions to online players
+- Access group/user managers easily
+
+---
+
+### 📦 Static API Access
+
+Use the `PurePermsX::get...()` static accessors if your plugin initializes the API via dependency.
+
+```php
+use Mellooh\PurePermsX\api\PurePermsX;
+
+$group = PurePermsX::getUserManager()->getGroup($player->getName());
+PurePermsX::getPermissionHandler()->applyPermissions($player);
+```
+
+---
+
+### 🧠 Example: Promote a Player to a Group Programmatically
+
+Here’s a complete example of how to create a group (if it doesn't exist), assign it to a player, set permissions, and apply them:
+
+```php
+use Mellooh\PurePermsX\api\PurePermsX;
+use pocketmine\player\Player;
+
+class RankManager {
+
+    /**
+     * Promote player to a new group and apply all group permissions.
+     *
+     * @param Player $player
+     * @param string $targetGroup
+     */
+    public static function promote(Player $player, string $targetGroup): void {
+        $groupManager = PurePermsX::getGroupManager();
+        $userManager = PurePermsX::getUserManager();
+        $permissionHandler = PurePermsX::getPermissionHandler();
+
+        // Automatically create the group if it doesn't exist
+        if (!$groupManager->groupExists($targetGroup)) {
+            $groupManager->createGroup($targetGroup);
+            $groupManager->setPermissions($targetGroup, [
+                "essentials.fly",
+                "essentials.spawn",
+                "chat.colored"
+            ]);
+        }
+
+        // Set group for the player (saved in users/)
+        $userManager->setGroup($player->getName(), $targetGroup);
+
+        // Apply group permissions to the player
+        $permissionHandler->applyPermissions($player);
+
+        // Feedback to player
+        $player->sendMessage("§aYou have been promoted to group §b" . ucfirst($targetGroup) . "§a!");
+    }
+
+    /**
+     * Check if a player’s group has a specific permission.
+     *
+     * @param Player $player
+     * @param string $permission
+     * @return bool
+     */
+    public static function hasGroupPermission(Player $player, string $permission): bool {
+        $group = PurePermsX::getUserManager()->getGroup($player->getName());
+        $permissions = PurePermsX::getGroupManager()->getPermissions($group);
+
+        return in_array($permission, $permissions);
+    }
+}
+```
+
+---
+
+### ✅ Quick Reference
+
+| Method | Description |
+|--------|-------------|
+| `PurePermsX::getGroupManager()` | Access group CRUD and permission methods |
+| `PurePermsX::getUserManager()` | Manage player-to-group relations |
+| `PurePermsX::getPermissionHandler()` | Apply permissions to online players |
+| `createGroup(string $name)` | Creates a group |
+| `addPermission($group, $node)` | Adds permission to a group |
+| `setGroup($playerName, $group)` | Assigns a group to a player |
+| `applyPermissions($player)` | Applies current permissions to a player |
 
 ## ⭐ Contribute
 
