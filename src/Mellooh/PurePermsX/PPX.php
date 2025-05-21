@@ -2,6 +2,7 @@
 
 namespace Mellooh\PurePermsX;
 
+use Mellooh\PurePermsX\api\PurePermsX;
 use Mellooh\PurePermsX\commands\PermCommand;
 use Mellooh\PurePermsX\handler\PermissionHandler;
 use Mellooh\PurePermsX\listener\EventListener;
@@ -26,12 +27,13 @@ class PPX extends PluginBase {
 
         $this->groupManager = new GroupManager($this);
         $this->userManager = new UserManager($this);
-        $this->permissionHandler = new PermissionHandler();
+        $this->permissionHandler = new PermissionHandler($this);
 
+        PurePermsX::init($this);
         MessageManager::init($this);
 
         $this->getServer()->getCommandMap()->register("ppx", new PermCommand($this));
-        $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
 
         $this->getLogger()->info("§b
 #  ______              ______                      __   __

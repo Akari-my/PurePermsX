@@ -9,6 +9,12 @@ use Mellooh\PurePermsX\PPX;
 
 class GroupRmPerm implements SubCommand {
 
+    private PPX $plugin;
+
+    public function __construct(PPX $plugin){
+        $this->plugin = $plugin;
+    }
+
     public function execute(CommandSender $sender, array $args): void {
         if (count($args) < 2) {
             $sender->sendMessage(MessageManager::get("commands.group.usage.rmperm"));
@@ -16,7 +22,7 @@ class GroupRmPerm implements SubCommand {
         }
 
         [$group, $perm] = $args;
-        $gm = PPX::getInstance()->getGroupManager();
+        $gm = $this->plugin->getGroupManager();
 
         if (!$gm->groupExists($group)) {
             $sender->sendMessage(MessageManager::get("commands.group.does_not_exist", ["group" => $group]));
@@ -29,10 +35,10 @@ class GroupRmPerm implements SubCommand {
             "permission" => $perm
         ]));
 
-        foreach (PPX::getInstance()->getServer()->getOnlinePlayers() as $player) {
+        foreach ($this->plugin->getServer()->getOnlinePlayers() as $player) {
             $n = strtolower($player->getName());
-            if (PPX::getInstance()->getUserManager()->getGroup($n) === $group) {
-                PPX::getInstance()->getPermissionHandler()->applyPermissions($player);
+            if ($this->plugin->getUserManager()->getGroup($n) === $group) {
+                $this->plugin->getPermissionHandler()->applyPermissions($player);
             }
         }
     }

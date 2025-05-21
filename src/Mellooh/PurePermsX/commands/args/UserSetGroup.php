@@ -9,6 +9,12 @@ use Mellooh\PurePermsX\PPX;
 
 class UserSetGroup implements SubCommand {
 
+    private PPX $plugin;
+
+    public function __construct(PPX $plugin){
+        $this->plugin = $plugin;
+    }
+
     public function execute(CommandSender $sender, array $args): void {
         if (count($args) < 2) {
             $sender->sendMessage(MessageManager::get("commands.user.usage_setgroup"));
@@ -16,23 +22,23 @@ class UserSetGroup implements SubCommand {
         }
 
         [$playerName, $group] = $args;
-        $gm = PPX::getInstance()->getGroupManager();
+        $gm = $this->plugin->getGroupManager();
 
         if (!$gm->groupExists($group)) {
             $sender->sendMessage(MessageManager::get("commands.group.does_not_exist", ["group" => $group]));
             return;
         }
 
-        $um = PPX::getInstance()->getUserManager();
+        $um = $this->plugin->getUserManager();
         $um->setGroup($playerName, $group);
         $sender->sendMessage(MessageManager::get("commands.user.setgroup", [
             "player" => $playerName,
             "group" => $group
         ]));
 
-        $player = PPX::getInstance()->getServer()->getPlayerExact($playerName);
+        $player = $this->plugin->getServer()->getPlayerExact($playerName);
         if ($player !== null) {
-            PPX::getInstance()->getPermissionHandler()->applyPermissions($player);
+            $this->plugin->getPermissionHandler()->applyPermissions($player);
         }
     }
 }

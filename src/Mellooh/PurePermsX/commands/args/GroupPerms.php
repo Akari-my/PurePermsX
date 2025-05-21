@@ -9,6 +9,12 @@ use Mellooh\PurePermsX\PPX;
 
 class GroupPerms implements SubCommand {
 
+    private PPX $plugin;
+
+    public function __construct(PPX $plugin){
+        $this->plugin = $plugin;
+    }
+
     public function execute(CommandSender $sender, array $args): void {
         if (!isset($args[0])) {
             $sender->sendMessage(MessageManager::get("commands.usage.perms"));
@@ -16,7 +22,7 @@ class GroupPerms implements SubCommand {
         }
 
         $group = strtolower($args[0]);
-        $gm = PPX::getInstance()->getGroupManager();
+        $gm = $this->plugin->getGroupManager();
         $perms = $gm->getPermissions($group);
 
         if (!$gm->groupExists($group)) {

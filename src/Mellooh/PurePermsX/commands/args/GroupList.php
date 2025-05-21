@@ -9,8 +9,14 @@ use pocketmine\command\CommandSender;
 
 class GroupList implements SubCommand {
 
+    private PPX $plugin;
+
+    public function __construct(PPX $plugin){
+        $this->plugin = $plugin;
+    }
+
     public function execute(CommandSender $sender, array $args): void {
-        $groups = PPX::getInstance()->getGroupManager()->getGroups();
+        $groups = $this->plugin->getGroupManager()->getGroups();
 
         if (empty($groups)) {
             $sender->sendMessage(MessageManager::get("commands.group.no_groups"));

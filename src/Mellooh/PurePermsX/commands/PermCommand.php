@@ -28,15 +28,15 @@ class PermCommand extends Command implements PluginOwned {
         $this->setPermission("ppx.use");
 
         $this->commands = [
-            "group add"      => new GroupAdd(),
-            "group del"      => new GroupDel(),
-            "group list"     => new GroupList(),
-            "group addperm"  => new GroupAddPerm(),
-            "group rmperm"   => new GroupRmPerm(),
-            "group perms"    => new GroupPerms(),
+            "group add"      => new GroupAdd($this->plugin),
+            "group del"      => new GroupDel($this->plugin),
+            "group list"     => new GroupList($this->plugin),
+            "group addperm"  => new GroupAddPerm($this->plugin),
+            "group rmperm"   => new GroupRmPerm($this->plugin),
+            "group perms"    => new GroupPerms($this->plugin),
 
-            "user setgroup"  => new UserSetGroup(),
-            "user group"     => new UserGroup(),
+            "user setgroup"  => new UserSetGroup($this->plugin),
+            "user group"     => new UserGroup($this->plugin),
             "help" => new Help(),
         ];
     }

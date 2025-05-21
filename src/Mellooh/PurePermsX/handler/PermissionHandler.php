@@ -8,6 +8,12 @@ use pocketmine\player\Player;
 
 class PermissionHandler{
 
+    private PPX $plugin;
+
+    public function __construct(PPX $plugin){
+        $this->plugin = $plugin;
+    }
+
     /** @var PermissionAttachment[] */
     private array $attachments = [];
 
@@ -19,10 +25,10 @@ class PermissionHandler{
             unset($this->attachments[$name]);
         }
 
-        $userGroup = PPX::getInstance()->getUserManager()->getGroup($name);
-        $perms = PPX::getInstance()->getGroupManager()->getPermissions($userGroup);
+        $userGroup = $this->plugin->getUserManager()->getGroup($name);
+        $perms = $this->plugin->getGroupManager()->getPermissions($userGroup);
 
-        $attachment = $player->addAttachment(PPX::getInstance());
+        $attachment = $player->addAttachment($this->plugin);
         foreach ($perms as $perm) {
             $attachment->setPermission($perm, true);
         }

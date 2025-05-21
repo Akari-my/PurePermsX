@@ -7,8 +7,13 @@ use Mellooh\PurePermsX\utils\MessageManager;
 use pocketmine\command\CommandSender;
 use Mellooh\PurePermsX\PPX;
 
-class GroupDel implements SubCommand
-{
+class GroupDel implements SubCommand{
+
+    private PPX $plugin;
+
+    public function __construct(PPX $plugin){
+        $this->plugin = $plugin;
+    }
 
     public function execute(CommandSender $sender, array $args): void {
         if (!isset($args[0])) {
@@ -17,17 +22,17 @@ class GroupDel implements SubCommand
         }
 
         $group = strtolower($args[0]);
-        $gm = PPX::getInstance()->getGroupManager();
+        $gm = $this->plugin->getGroupManager();
 
         if ($gm->deleteGroup($group)) {
             $sender->sendMessage(MessageManager::get("commands.group.delete", ["group" => $group]));
 
-            foreach (PPX::getInstance()->getServer()->getOnlinePlayers() as $player) {
+            foreach ($this->plugin->getServer()->getOnlinePlayers() as $player) {
                 $name = strtolower($player->getName());
-                $um = PPX::getInstance()->getUserManager();
+                $um = $this->plugin->getUserManager();
                 if ($um->getGroup($name) === $group) {
                     $um->setGroup($name, "default");
-                    PPX::getInstance()->getPermissionHandler()->applyPermissions($player);
+                    $this->plugin->getPermissionHandler()->applyPermissions($player);
                 }
             }
         } else {
