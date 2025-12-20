@@ -2,6 +2,8 @@
 
 namespace Mellooh\PurePermsX\commands;
 
+use Mellooh\libs\CommandoX\BaseCommand;
+use Mellooh\libs\CommandoX\CommandContext;
 use Mellooh\PurePermsX\commands\args\GroupAdd;
 use Mellooh\PurePermsX\commands\args\GroupAddPerm;
 use Mellooh\PurePermsX\commands\args\GroupDel;
@@ -12,58 +14,35 @@ use Mellooh\PurePermsX\commands\args\Help;
 use Mellooh\PurePermsX\commands\args\UserGroup;
 use Mellooh\PurePermsX\commands\args\UserSetGroup;
 use Mellooh\PurePermsX\PPX;
-use pocketmine\command\Command;
-use pocketmine\command\CommandSender;
 use pocketmine\plugin\Plugin;
 use pocketmine\plugin\PluginOwned;
 
-class PermCommand extends Command implements PluginOwned {
+class PermCommand extends BaseCommand implements PluginOwned {
 
-    private PPX $plugin;
-    private array $commands = [];
-
-    public function __construct(PPX $plugin) {
-        parent::__construct("ppx", "Permission management command", "/ppx help");
-        $this->plugin = $plugin;
-        $this->setPermission("ppx.use");
-
-        $this->commands = [
-            "group add"      => new GroupAdd($this->plugin),
-            "group del"      => new GroupDel($this->plugin),
-            "group list"     => new GroupList($this->plugin),
-            "group addperm"  => new GroupAddPerm($this->plugin),
-            "group rmperm"   => new GroupRmPerm($this->plugin),
-            "group perms"    => new GroupPerms($this->plugin),
-
-            "user setgroup"  => new UserSetGroup($this->plugin),
-            "user group"     => new UserGroup($this->plugin),
-            "help" => new Help(),
-        ];
+    public function __construct(PPX $plugin, string $name = "ppx") {
+        parent::__construct($plugin, $name, "Permission management command", []);
     }
 
-    public function execute(CommandSender $sender, string $label, array $args): void {
-        if (count($args) === 0 || !$sender->hasPermission("ppx.use")) {
-            $sender->sendMessage("§eUse: /ppx group|user <action>");
-            return;
-        }
+    protected function configure(): void {
+        $this->setPermission("ppx.use");
+        $this->setPermissionMessageCustom("§cYou don't have permission to use /ppx.");
 
-        $category = strtolower(array_shift($args));
-        $sub = isset($args[0]) ? strtolower($args[0]) : "";
-        $lookup = $category . " " . $sub;
+        $this->registerSubCommand(new GroupAdd($this->plugin, "groupadd", "Create a group", ["group add"]));
+        $this->registerSubCommand(new GroupDel($this->plugin, "groupdel", "Delete a group", ["group del"]));
+        $this->registerSubCommand(new GroupList($this->plugin, "grouplist", "List all groups", ["group list"]));
+        $this->registerSubCommand(new GroupPerms($this->plugin, "groupperms", "Show group permissions", ["group perms"]));
+        $this->registerSubCommand(new GroupAddPerm($this->plugin, "groupaddperm", "Add permission to group", ["group addperm"]));
+        $this->registerSubCommand(new GroupRmPerm($this->plugin, "grouprmperm", "Remove permission from group", ["group rmperm"]));
 
-        if (isset($this->commands[$lookup])) {
-            array_shift($args);
-            $this->commands[$lookup]->execute($sender, $args);
+        $this->registerSubCommand(new UserSetGroup($this->plugin, "usersetgroup", "Assign group to player", ["user setgroup"]));
+        $this->registerSubCommand(new UserGroup($this->plugin, "usergroup", "Show player group", ["user group"]));
 
-        } elseif (isset($this->commands[$category])) {
-            $this->commands[$category]->execute($sender, $args);
+        $this->registerSubCommand(new Help($this->plugin, "help", "Show PurePermsX help"));
+    }
 
-        } elseif ($category === "help") {
-            $this->commands["help"]->execute($sender, $args);
-
-        } else {
-            $sender->sendMessage("§cUnknown subcommand. Use §e/ppx help");
-        }
+    public function onRun(CommandContext $context): void {
+        $sender = $context->getSender();
+        $sender->sendMessage("§eUse: §f/ppx help");
     }
 
     public function getOwningPlugin(): Plugin {

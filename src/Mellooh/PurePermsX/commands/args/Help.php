@@ -2,24 +2,34 @@
 
 namespace Mellooh\PurePermsX\commands\args;
 
-use Mellooh\PurePermsX\commands\SubCommand;
-use pocketmine\command\CommandSender;
+use Mellooh\libs\CommandoX\BaseSubCommand;
+use Mellooh\libs\CommandoX\CommandContext;
+use pocketmine\plugin\Plugin;
 
-class Help implements SubCommand{
+class Help extends BaseSubCommand {
 
-    public function execute(CommandSender $sender, array $args): void {
+    public function __construct(Plugin $plugin, string $name = "help", string $description = "Show PurePermsX help", array $aliases = []) {
+        parent::__construct($plugin, $name, $description, $aliases);
+    }
+
+    protected function configure(): void {
+    }
+
+    public function onRun(CommandContext $context): void {
+        $sender = $context->getSender();
+
         $sender->sendMessage("§e§l☰ PurePermsX Help");
         $sender->sendMessage("§7Group commands:");
-        $sender->sendMessage(" §b/ppx group add <name> §7- Create a group");
-        $sender->sendMessage(" §b/ppx group del <name> §7- Delete a group");
-        $sender->sendMessage(" §b/ppx group list §7- Show all groups");
-        $sender->sendMessage(" §b/ppx group perms <group> §7- Show group permissions");
-        $sender->sendMessage(" §b/ppx group addperm <group> <permission> §7- Add permission");
-        $sender->sendMessage(" §b/ppx group rmperm <group> <permission> §7- Remove permission");
+        $sender->sendMessage(" §b/ppx groupadd <name> §7- Create a group");
+        $sender->sendMessage(" §b/ppx groupdel <name> §7- Delete a group");
+        $sender->sendMessage(" §b/ppx grouplist §7- Show all groups");
+        $sender->sendMessage(" §b/ppx groupperms <group> §7- Show group permissions");
+        $sender->sendMessage(" §b/ppx groupaddperm <group> <permission> §7- Add permission");
+        $sender->sendMessage(" §b/ppx grouprmperm <group> <permission> §7- Remove permission");
 
         $sender->sendMessage("");
         $sender->sendMessage("§7User commands:");
-        $sender->sendMessage(" §b/ppx user setgroup <player> <group> §7- Assign group");
-        $sender->sendMessage(" §b/ppx user group <player> §7- Show player group");
+        $sender->sendMessage(" §b/ppx usersetgroup <player> <group> §7- Assign group");
+        $sender->sendMessage(" §b/ppx usergroup <player> §7- Show player group");
     }
 }

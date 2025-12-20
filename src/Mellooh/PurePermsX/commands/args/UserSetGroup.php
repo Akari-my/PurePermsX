@@ -2,43 +2,50 @@
 
 namespace Mellooh\PurePermsX\commands\args;
 
-use Mellooh\PurePermsX\commands\SubCommand;
-use Mellooh\PurePermsX\utils\MessageManager;
-use pocketmine\command\CommandSender;
+use Mellooh\libs\CommandoX\argument\StringArgument;
+use Mellooh\libs\CommandoX\BaseSubCommand;
+use Mellooh\libs\CommandoX\CommandContext;
 use Mellooh\PurePermsX\PPX;
+use Mellooh\PurePermsX\utils\MessageManager;
+use pocketmine\plugin\Plugin;
 
-class UserSetGroup implements SubCommand {
+class UserSetGroup extends BaseSubCommand {
 
-    private PPX $plugin;
-
-    public function __construct(PPX $plugin){
-        $this->plugin = $plugin;
+    public function __construct(Plugin $plugin, string $name = "user setgroup", string $description = "Assign group to player", array $aliases = []) {
+        parent::__construct($plugin, $name, $description, $aliases);
     }
 
-    public function execute(CommandSender $sender, array $args): void {
-        if (count($args) < 2) {
-            $sender->sendMessage(MessageManager::get("commands.user.usage_setgroup"));
-            return;
-        }
+    protected function configure(): void {
+        $this->registerArgument(0, new StringArgument("player"));
+        $this->registerArgument(1, new StringArgument("group"));
+    }
 
-        [$playerName, $group] = $args;
-        $gm = $this->plugin->getGroupManager();
+    public function onRun(CommandContext $context): void {
+        $sender = $context->getSender();
+        /** @var PPX $plugin */
+        $plugin = $context->getPlugin();
+
+        $playerName = (string)$context->getArg("player");
+        $group      = (string)$context->getArg("group");
+
+        $gm = $plugin->getGroupManager();
 
         if (!$gm->groupExists($group)) {
             $sender->sendMessage(MessageManager::get("commands.group.does_not_exist", ["group" => $group]));
             return;
         }
 
-        $um = $this->plugin->getUserManager();
+        $um = $plugin->getUserManager();
         $um->setGroup($playerName, $group);
+
         $sender->sendMessage(MessageManager::get("commands.user.setgroup", [
             "player" => $playerName,
-            "group" => $group
+            "group"  => $group,
         ]));
 
-        $player = $this->plugin->getServer()->getPlayerExact($playerName);
+        $player = $plugin->getServer()->getPlayerExact($playerName);
         if ($player !== null) {
-            $this->plugin->getPermissionHandler()->applyPermissions($player);
+            $plugin->getPermissionHandler()->applyPermissions($player);
         }
     }
 }

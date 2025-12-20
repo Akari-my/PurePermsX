@@ -2,37 +2,40 @@
 
 namespace Mellooh\PurePermsX\commands\args;
 
-use Mellooh\PurePermsX\commands\SubCommand;
-use Mellooh\PurePermsX\utils\MessageManager;
-use pocketmine\command\CommandSender;
+use Mellooh\libs\CommandoX\argument\StringArgument;
+use Mellooh\libs\CommandoX\BaseSubCommand;
+use Mellooh\libs\CommandoX\CommandContext;
 use Mellooh\PurePermsX\PPX;
+use Mellooh\PurePermsX\utils\MessageManager;
+use pocketmine\plugin\Plugin;
 
-class GroupDel implements SubCommand{
+class GroupDel extends BaseSubCommand {
 
-    private PPX $plugin;
-
-    public function __construct(PPX $plugin){
-        $this->plugin = $plugin;
+    public function __construct(Plugin $plugin, string $name = "group del", string $description = "Delete a group", array $aliases = []) {
+        parent::__construct($plugin, $name, $description, $aliases);
     }
 
-    public function execute(CommandSender $sender, array $args): void {
-        if (!isset($args[0])) {
-            $sender->sendMessage(MessageManager::get("commands.usage.groupdel"));
-            return;
-        }
+    protected function configure(): void {
+        $this->registerArgument(0, new StringArgument("group"));
+    }
 
-        $group = strtolower($args[0]);
-        $gm = $this->plugin->getGroupManager();
+    public function onRun(CommandContext $context): void {
+        $sender = $context->getSender();
+        /** @var PPX $plugin */
+        $plugin = $context->getPlugin();
+
+        $group = strtolower((string)$context->getArg("group"));
+        $gm    = $plugin->getGroupManager();
 
         if ($gm->deleteGroup($group)) {
             $sender->sendMessage(MessageManager::get("commands.group.delete", ["group" => $group]));
 
-            foreach ($this->plugin->getServer()->getOnlinePlayers() as $player) {
+            foreach ($plugin->getServer()->getOnlinePlayers() as $player) {
                 $name = strtolower($player->getName());
-                $um = $this->plugin->getUserManager();
+                $um = $plugin->getUserManager();
                 if ($um->getGroup($name) === $group) {
                     $um->setGroup($name, "default");
-                    $this->plugin->getPermissionHandler()->applyPermissions($player);
+                    $plugin->getPermissionHandler()->applyPermissions($player);
                 }
             }
         } else {

@@ -2,27 +2,33 @@
 
 namespace Mellooh\PurePermsX\commands\args;
 
-use Mellooh\PurePermsX\commands\SubCommand;
-use Mellooh\PurePermsX\utils\MessageManager;
-use pocketmine\command\CommandSender;
+use Mellooh\libs\CommandoX\argument\StringArgument;
+use Mellooh\libs\CommandoX\BaseSubCommand;
+use Mellooh\libs\CommandoX\CommandContext;
 use Mellooh\PurePermsX\PPX;
+use Mellooh\PurePermsX\utils\MessageManager;
+use pocketmine\plugin\Plugin;
 
-class GroupAddPerm implements SubCommand {
+class GroupAddPerm extends BaseSubCommand {
 
-    private PPX $plugin;
-
-    public function __construct(PPX $plugin){
-        $this->plugin = $plugin;
+    public function __construct(Plugin $plugin, string $name = "group addperm", string $description = "Add permission to a group", array $aliases = []) {
+        parent::__construct($plugin, $name, $description, $aliases);
     }
 
-    public function execute(CommandSender $sender, array $args): void {
-        if (count($args) < 2) {
-            $sender->sendMessage(MessageManager::get("commands.group.usage.addperm"));
-            return;
-        }
+    protected function configure(): void {
+        $this->registerArgument(0, new StringArgument("group"));
+        $this->registerArgument(1, new StringArgument("permission"));
+    }
 
-        [$group, $perm] = $args;
-        $gm = $this->plugin->getGroupManager();
+    public function onRun(CommandContext $context): void {
+        $sender = $context->getSender();
+        /** @var PPX $plugin */
+        $plugin = $context->getPlugin();
+
+        $group = (string)$context->getArg("group");
+        $perm  = (string)$context->getArg("permission");
+
+        $gm = $plugin->getGroupManager();
 
         if (!$gm->groupExists($group)) {
             $sender->sendMessage(MessageManager::get("commands.group.does_not_exist", ["group" => $group]));
@@ -31,14 +37,14 @@ class GroupAddPerm implements SubCommand {
 
         $gm->addPermission($group, $perm);
         $sender->sendMessage(MessageManager::get("commands.group.added_perm", [
-            "group" => $group,
-            "permission" => $perm
+            "group"      => $group,
+            "permission" => $perm,
         ]));
 
-        foreach ($this->plugin->getServer()->getOnlinePlayers() as $player) {
+        foreach ($plugin->getServer()->getOnlinePlayers() as $player) {
             $n = strtolower($player->getName());
-            if ($this->plugin->getUserManager()->getGroup($n) === $group) {
-                $this->plugin->getPermissionHandler()->applyPermissions($player);
+            if ($plugin->getUserManager()->getGroup($n) === $group) {
+                $plugin->getPermissionHandler()->applyPermissions($player);
             }
         }
     }

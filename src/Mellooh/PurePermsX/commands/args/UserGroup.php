@@ -2,31 +2,35 @@
 
 namespace Mellooh\PurePermsX\commands\args;
 
+use Mellooh\libs\CommandoX\argument\StringArgument;
+use Mellooh\libs\CommandoX\BaseSubCommand;
+use Mellooh\libs\CommandoX\CommandContext;
 use Mellooh\PurePermsX\commands\SubCommand;
-use Mellooh\PurePermsX\utils\MessageManager;
-use pocketmine\command\CommandSender;
 use Mellooh\PurePermsX\PPX;
+use Mellooh\PurePermsX\utils\MessageManager;
+use pocketmine\plugin\Plugin;
 
-class UserGroup implements SubCommand {
+class UserGroup extends BaseSubCommand {
 
-    private PPX $plugin;
-
-    public function __construct(PPX $plugin){
-        $this->plugin = $plugin;
+    public function __construct(Plugin $plugin, string $name = "user group", string $description = "Show player's group", array $aliases = []) {
+        parent::__construct($plugin, $name, $description, $aliases);
     }
 
-    public function execute(CommandSender $sender, array $args): void {
-        if (!isset($args[0])) {
-            $sender->sendMessage(MessageManager::get("commands.user.usage_group"));
-            return;
-        }
+    protected function configure(): void {
+        $this->registerArgument(0, new StringArgument("player"));
+    }
 
-        $playerName = strtolower($args[0]);
-        $group = $this->plugin->getUserManager()->getGroup($playerName);
+    public function onRun(CommandContext $context): void {
+        $sender = $context->getSender();
+        /** @var PPX $plugin */
+        $plugin = $context->getPlugin();
+
+        $playerName = strtolower((string)$context->getArg("player"));
+        $group = $plugin->getUserManager()->getGroup($playerName);
 
         $sender->sendMessage(MessageManager::get("commands.user.group", [
             "player" => $playerName,
-            "group" => $group
+            "group"  => $group,
         ]));
     }
 }

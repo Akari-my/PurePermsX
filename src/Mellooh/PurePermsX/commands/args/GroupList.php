@@ -2,21 +2,27 @@
 
 namespace Mellooh\PurePermsX\commands\args;
 
-use Mellooh\PurePermsX\commands\SubCommand;
+use Mellooh\libs\CommandoX\BaseSubCommand;
+use Mellooh\libs\CommandoX\CommandContext;
 use Mellooh\PurePermsX\PPX;
 use Mellooh\PurePermsX\utils\MessageManager;
-use pocketmine\command\CommandSender;
+use pocketmine\plugin\Plugin;
 
-class GroupList implements SubCommand {
+class GroupList extends BaseSubCommand {
 
-    private PPX $plugin;
-
-    public function __construct(PPX $plugin){
-        $this->plugin = $plugin;
+    public function __construct(Plugin $plugin, string $name = "group list", string $description = "List all groups", array $aliases = []) {
+        parent::__construct($plugin, $name, $description, $aliases);
     }
 
-    public function execute(CommandSender $sender, array $args): void {
-        $groups = $this->plugin->getGroupManager()->getGroups();
+    protected function configure(): void {
+    }
+
+    public function onRun(CommandContext $context): void {
+        $sender = $context->getSender();
+        /** @var PPX $plugin */
+        $plugin = $context->getPlugin();
+
+        $groups = $plugin->getGroupManager()->getGroups();
 
         if (empty($groups)) {
             $sender->sendMessage(MessageManager::get("commands.group.no_groups"));
@@ -25,7 +31,7 @@ class GroupList implements SubCommand {
 
         $sender->sendMessage(MessageManager::get("commands.group.list_title"));
         foreach ($groups as $group) {
-            $sender->sendMessage(" §b- $group");
+            $sender->sendMessage(" §b- {$group}");
         }
     }
 }

@@ -1,5 +1,23 @@
 <?php
 
+/**
+ *      _____  _______   __
+ *     |  __ \|  __ \ \ / /
+ *     | |__) | |__) \ V /
+ *     |  ___/|  ___/ > <
+ *     | |    | |    / . \
+ *     |_|    |_|   /_/ \_\
+ *
+ * * This program is free plugin: you can redistribute it and/or modify
+ * * * it under the terms of the GNU Lesser General Public License as published by
+ * * * the Free plugin Foundation, either version 3 of the License, or
+ * * * (at your option) any later version.
+ * * *
+ * * * @author Mellooh
+ * * * @link https://github.com/Akari-my
+ * *
+ */
+
 namespace Mellooh\PurePermsX;
 
 use Mellooh\PurePermsX\api\PurePermsX;
@@ -35,17 +53,7 @@ class PPX extends PluginBase {
         $this->getServer()->getCommandMap()->register("ppx", new PermCommand($this));
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
 
-        $this->getLogger()->info("§b
-#  ______              ______                      __   __
-#  | ___ \             | ___ \                     \ \ / /
-#  | |_/ _   _ _ __ ___| |_/ ___ _ __ _ __ ___  ___ \ V / 
-#  |  __| | | | '__/ _ |  __/ _ | '__| '_ ` _ \/ __|/   \ 
-#  | |  | |_| | | |  __| | |  __| |  | | | | | \__ / /^\ \
-#  \_|   \__,_|_|  \___\_|  \___|_|  |_| |_| |_|___\/   \/
-#                                                         
-# Activated
-# by Mellooh                                                         
-");
+        $this->getLogger()->info("§bPurePermsX plugin enabled successfully !");
 
         if (!$this->getGroupManager()->groupExists("guest")) {
             $this->getGroupManager()->createGroup("guest");

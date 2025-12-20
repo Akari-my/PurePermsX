@@ -2,30 +2,32 @@
 
 namespace Mellooh\PurePermsX\commands\args;
 
-use Mellooh\PurePermsX\commands\SubCommand;
+use Mellooh\libs\CommandoX\argument\StringArgument;
+use Mellooh\libs\CommandoX\BaseSubCommand;
+use Mellooh\libs\CommandoX\CommandContext;
 use Mellooh\PurePermsX\PPX;
 use Mellooh\PurePermsX\utils\MessageManager;
-use pocketmine\command\CommandSender;
+use pocketmine\plugin\Plugin;
 
-class GroupAdd implements SubCommand {
+class GroupAdd extends BaseSubCommand {
 
-    private PPX $plugin;
-
-    public function __construct(PPX $plugin){
-        $this->plugin = $plugin;
+    public function __construct(Plugin $plugin, string $name = "groupadd", string $description = "Create a group", array $aliases = ["group add"]) {
+        parent::__construct($plugin, $name, $description, $aliases);
     }
 
+    protected function configure(): void {
+        $this->setPermission("ppx.admin");
+        $this->registerArgument(0, new StringArgument("group"));
+    }
 
-    public function execute(CommandSender $sender, array $args): void {
-        if (!$sender->hasPermission("ppx.admin")) return;
+    public function onRun(CommandContext $context): void {
+        $sender = $context->getSender();
+        /** @var PPX $plugin */
+        $plugin = $context->getPlugin();
 
-        if (!isset($args[0])) {
-            $sender->sendMessage(MessageManager::get("commands.usage.groupadd"));
-            return;
-        }
+        $group = strtolower((string)$context->getArg("group"));
 
-        $group = strtolower($args[0]);
-        if ($this->plugin->getGroupManager()->createGroup($group)) {
+        if ($plugin->getGroupManager()->createGroup($group)) {
             $sender->sendMessage(MessageManager::get("commands.group.create", ["group" => $group]));
         } else {
             $sender->sendMessage(MessageManager::get("commands.group.already_exists", ["group" => $group]));
