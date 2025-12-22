@@ -27,6 +27,7 @@ use Mellooh\PurePermsX\listener\EventListener;
 use Mellooh\PurePermsX\manager\GroupManager;
 use Mellooh\PurePermsX\manager\UserManager;
 use Mellooh\PurePermsX\utils\MessageManager;
+use Mellooh\PurePermsX\utils\UpdateChecker;
 use pocketmine\plugin\PluginBase;
 
 class PPX extends PluginBase {
@@ -49,6 +50,7 @@ class PPX extends PluginBase {
 
         PurePermsX::init($this);
         MessageManager::init($this);
+        UpdateChecker::check($this);
 
         $this->getServer()->getCommandMap()->register("ppx", new PermCommand($this, "ppx"));
 
