@@ -50,11 +50,6 @@ Here are some of the available commands:
 
 _All messages and usage prompts are customizable inside `messages.yml`._
 
-Perfetto!
-
-Qui sotto trovi la **sezione `API for Developers`** ben scritta, con un **esempio avanzato completo** (commentato) e pronto da incollare nel tuo `README.md`.  
-Ho mantenuto lo stile coerente al tuo file e migliorato leggermente la grammatica per dare un tocco più professionale 💼
-
 ---
 
 ### 🔌 API for Developers
