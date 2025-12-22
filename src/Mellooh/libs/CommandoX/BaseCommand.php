@@ -98,6 +98,7 @@ abstract class BaseCommand extends Command {
      * Called by PocketMine when the command is executed.
      */
     public function execute(CommandSender $sender, string $label, array $args): bool {
+
         // Root permission
         if (!$this->testPermissionSilent($sender)) {
             $msg = $this->permissionMessageCustom
@@ -245,46 +246,29 @@ abstract class BaseCommand extends Command {
     /**
      * Try to match a subcommand against the given args.
      * Supports:
-     *   - single-word names (e.g. "groupadd")
-     *   - multi-word aliases (e.g. "group add")
+     *   - single-word names/aliases (e.g. "groupadd")
+     *   - two-word aliases (e.g. "group add")
      *
      * Returns [BaseSubCommand|null, int $consumedArgs]
      */
     private function findMatchingSubCommand(array $args): array {
-        $bestMatch = null;
-        $bestLen = 0;
+        if (count($args) === 0) {
+            return [null, 0];
+        }
 
-        foreach ($this->subCommandsByName as $sub) {
-            // Patterns: name + aliases
-            $patterns = array_merge(
-                [$sub->getName()],
-                $sub->getAliases()
-            );
+        $first = strtolower($args[0]);
 
-            foreach ($patterns as $pattern) {
-                $tokens = preg_split('/\s+/', strtolower($pattern));
-                $tokens = array_values(array_filter($tokens, fn($s) => $s !== ""));
-                $len = count($tokens);
+        if (isset($this->subCommandsByAlias[$first])) {
+            return [$this->subCommandsByAlias[$first], 1];
+        }
 
-                if ($len === 0 || $len > count($args)) {
-                    continue;
-                }
-
-                $matched = true;
-                for ($i = 0; $i < $len; $i++) {
-                    if (strtolower($args[$i]) !== $tokens[$i]) {
-                        $matched = false;
-                        break;
-                    }
-                }
-
-                if ($matched && $len > $bestLen) {
-                    $bestLen = $len;
-                    $bestMatch = $sub;
-                }
+        if (count($args) >= 2) {
+            $two = strtolower($args[0] . " " . $args[1]);
+            if (isset($this->subCommandsByAlias[$two])) {
+                return [$this->subCommandsByAlias[$two], 2];
             }
         }
 
-        return [$bestMatch, $bestLen];
+        return [null, 0];
     }
 }

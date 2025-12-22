@@ -50,7 +50,8 @@ class PPX extends PluginBase {
         PurePermsX::init($this);
         MessageManager::init($this);
 
-        $this->getServer()->getCommandMap()->register("ppx", new PermCommand($this));
+        $this->getServer()->getCommandMap()->register("ppx", new PermCommand($this, "ppx"));
+
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
 
         $this->getLogger()->info("§bPurePermsX plugin enabled successfully !");
