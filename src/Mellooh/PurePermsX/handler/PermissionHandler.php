@@ -25,7 +25,11 @@ class PermissionHandler{
             unset($this->attachments[$name]);
         }
 
-        $userGroup = $this->plugin->getUserManager()->getGroup($name);
+        $userGroup = $this->plugin->getUserManager()->getGroup($name) ?? "guest";
+        if (!$this->plugin->getGroupManager()->groupExists($userGroup)) {
+            $userGroup = "guest";
+        }
+
         $perms = $this->plugin->getGroupManager()->getPermissions($userGroup);
 
         $attachment = $player->addAttachment($this->plugin);
@@ -42,5 +46,9 @@ class PermissionHandler{
             $player->removeAttachment($this->attachments[$name]);
             unset($this->attachments[$name]);
         }
+    }
+
+    public function onQuit(Player $player): void {
+        $this->removePermissions($player);
     }
 }

@@ -33,10 +33,10 @@ class GroupDel extends BaseSubCommand {
             foreach ($plugin->getServer()->getOnlinePlayers() as $player) {
                 $name = strtolower($player->getName());
                 $um = $plugin->getUserManager();
-                if ($um->getGroup($name) === $group) {
-                    $um->setGroup($name, "default");
-                    $plugin->getPermissionHandler()->applyPermissions($player);
-                }
+                    if ($um->getGroup($name) === $group) {
+                        $um->setGroup($name, "guest");
+                        $plugin->getPermissionHandler()->applyPermissions($player);
+                    }
             }
         } else {
             $sender->sendMessage(MessageManager::get("commands.group.does_not_exist", ["group" => $group]));

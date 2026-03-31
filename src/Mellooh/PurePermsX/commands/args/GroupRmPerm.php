@@ -5,7 +5,6 @@ namespace Mellooh\PurePermsX\commands\args;
 use Mellooh\libs\CommandoX\argument\StringArgument;
 use Mellooh\libs\CommandoX\BaseSubCommand;
 use Mellooh\libs\CommandoX\CommandContext;
-use Mellooh\PurePermsX\commands\SubCommand;
 use Mellooh\PurePermsX\PPX;
 use Mellooh\PurePermsX\utils\MessageManager;
 use pocketmine\plugin\Plugin;

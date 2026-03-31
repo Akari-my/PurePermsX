@@ -20,7 +20,7 @@ class UserManager{
             if (pathinfo($file, PATHINFO_EXTENSION) === "yml") {
                 $name = pathinfo($file, PATHINFO_FILENAME);
                 $cfg = new Config($this->userDirectory . $file, Config::YAML);
-                $group = $cfg->get("group", "default");
+                $group = $cfg->get("group", "guest");
                 $this->users[$name] = new User($name, $group);
             }
         }
@@ -29,9 +29,20 @@ class UserManager{
     public function getUser(string $name): User {
         $name = strtolower($name);
         if (!isset($this->users[$name])) {
-            $this->users[$name] = new User($name);
+            $user = $this->loadUserFromFile($name);
+            $this->users[$name] = $user;
         }
         return $this->users[$name];
+    }
+
+    private function loadUserFromFile(string $name): User {
+        $file = $this->userDirectory . $name . ".yml";
+        if (file_exists($file)) {
+            $cfg = new Config($file, Config::YAML);
+            $group = $cfg->get("group", "guest");
+            return new User($name, $group);
+        }
+        return new User($name, "guest");
     }
 
     public function setGroup(string $name, string $group): void {
